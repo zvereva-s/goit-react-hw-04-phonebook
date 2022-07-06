@@ -1,106 +1,71 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-import {load, save } from './shared/services/localStorage/storage';
+import { load, save } from './shared/services/localStorage/storage';
 
 import Section from 'components/Section';
 import ContactForm from 'components/ContactForm';
 import Filter from 'components/Filter';
 import ContactList from 'components/ContactList';
 
+function App() {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState(null);
 
-class App extends Component {
-  static defaultProps = {
-    contacts: [],
-  } 
-
-  state = {
-    contacts: [],
-    filter: '',
-  };
-
-  componentDidMount() {
+  useEffect(() => {
     const contacts = load('contactsList');
-    
-        if(contacts?.length) {
-            this.setState({
-                contacts,
-            })
-        }
 
-  }
+    if (contacts?.length) {
+      setContacts(prevState => [ ...prevState, ...contacts]);
+    }
+  }, []);
+  useEffect(() => {
+    save('contactsList', contacts)
+  }, [contacts])
 
-  componentDidUpdate() {
-    const { contacts } = this.state;
-    save('contactsList', contacts);
-  }
-
-
-  handelFormSubmit = data => {
+  function handelFormSubmit(data) {
     const { name } = data;
-    const { contacts } = this.state;
     const sameName = contacts.some(el => el.name === name);
-    let contact = {};
 
-    if (sameName) {
-      alert(`${name} is already in contacts.`);
-      return
-    }
-    else {
-      contact = { id: nanoid(), ...data };
-    }
+    sameName ? alert(`${name} is already in contacts.`) : setContacts(prevState => { return[...prevState, { id: nanoid(), ...data }]});
 
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, contact],
-    }));
-  };
-  handleFilterData = e => {
+  }
+  function handleFilterData(e) {
     const { value } = e.target;
-    this.setState({
-      filter: value,
-    })
-    }
-  getFilteredContacts() {
-    const { filter, contacts } = this.state;
-    
+    setFilter(value);
+  }
+
+  function getFilteredContacts() {
     if (!filter) {
-      return contacts
+      return contacts;
     }
-    return contacts.filter(({name}) =>
+    return contacts.filter(({ name }) =>
       name.toLowerCase().includes(filter.toLowerCase())
     );
   }
-  removeContact = id=> {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(el => el.id !== id),  
-    }));
+  function removeContact(id) {
+    setContacts(prevState => prevState.filter(el => el.id !== id));
+  
   }
 
-  render() {
-    
-    const { handelFormSubmit, handleFilterData, removeContact } = this;
-    const filtredContacts = this.getFilteredContacts();
+  
+  const filtredContacts = getFilteredContacts();
 
-
-    return (
-      <>
-        <Section title="Phonebook">
-          <ContactForm onSubmit={handelFormSubmit} />
-        </Section>
-        <Section title="Contacts">
-          <Filter
-            title="Find contacts by name"
-            filter={handleFilterData}
-          />
-          <ContactList contacts={filtredContacts} onClick={removeContact} />          
-        </Section>
-      </>
-    );
-  }
+  return (
+    <>
+      <Section title="Phonebook">
+        <ContactForm onSubmit={handelFormSubmit} />
+      </Section>
+      <Section title="Contacts">
+        <Filter title="Find contacts by name" filter={handleFilterData} />
+        <ContactList contacts={filtredContacts} onClick={removeContact} />
+      </Section>
+    </>
+  );
 }
-
+App.defaultProps = {
+  contacts: [],
+};
 export default App;
-
-
 
 
 

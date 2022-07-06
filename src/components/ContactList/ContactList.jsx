@@ -10,8 +10,7 @@ function ContactList({ contacts, onClick }) {
         className={styles.button}
         type="button"
         onClick={() => onClick(id)}
-      >
-        Delete
+      >Delete
       </button>
     </li>
   ));
