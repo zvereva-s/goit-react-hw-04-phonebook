@@ -1,0 +1,19 @@
+
+.button {
+    width: 100px;
+    margin-left: 30px;
+    padding: 4px;
+
+    border: 1px solid transparent;
+    border-radius: 5px;
+
+}
+
+.button:hover {
+    background-color: rgb(80, 80, 80);
+    color: white;
+}
+
+.item:not(:last-child){
+    margin-bottom: 10px;
+}
