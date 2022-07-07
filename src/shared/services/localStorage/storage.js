@@ -1,10 +1,10 @@
-
 const save = (key, value) => {
   try {
     const serializedState = JSON.stringify(value);
     localStorage.setItem(key, serializedState);
   } catch (error) {
     console.error('Set state error: ', error.message);
+    throw error;
   }
 };
 
@@ -14,6 +14,7 @@ const load = key => {
     return serializedState === null ? undefined : JSON.parse(serializedState);
   } catch (error) {
     console.error('Get state error: ', error.message);
+    throw error;
   }
 };
 
@@ -22,6 +23,7 @@ const remove = key => {
     localStorage.removeItem(key);
   } catch (error) {
     console.log('Remove item error: ', error.message);
+    throw error;
   }
 };
 

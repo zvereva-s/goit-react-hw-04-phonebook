@@ -36,12 +36,14 @@ function App() {
 
   function getFilteredContacts() {
     if (!filter) {
-      return contacts;
+      return contacts
     }
-    return contacts.filter(({ name }) =>
+    const updContacts = contacts.filter(({name}) =>
       name.toLowerCase().includes(filter.toLowerCase())
     );
+    return updContacts;
   }
+
   function removeContact(id) {
     setContacts(prevState => prevState.filter(el => el.id !== id));
   
