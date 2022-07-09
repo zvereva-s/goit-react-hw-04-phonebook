@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import { nanoid } from 'nanoid';
 import { load, save } from './shared/services/localStorage/storage';
 
@@ -10,7 +10,8 @@ import ContactList from 'components/ContactList';
 function App() {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState(null);
-
+  const firstRender = useRef(true);
+  
   useEffect(() => {
     const contacts = load('contactsList');
 
@@ -19,9 +20,12 @@ function App() {
     }
   }, []);
   useEffect(() => {
-    if(prevState.contacts !== contacts){
+    if (!firstRender.current){
     save('contactsList', contacts)
-    };
+    }
+    else{
+      firstRender.current=false;
+    }
   }, [contacts])
 
   function handelFormSubmit(data) {
