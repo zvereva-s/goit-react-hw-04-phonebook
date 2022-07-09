@@ -19,7 +19,9 @@ function App() {
     }
   }, []);
   useEffect(() => {
+    if(prevState.contacts !== contacts){
     save('contactsList', contacts)
+    };
   }, [contacts])
 
   function handelFormSubmit(data) {
